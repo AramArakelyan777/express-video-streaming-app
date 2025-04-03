@@ -12,6 +12,7 @@ const PORT = process.env.SERVER_PORT
 
 app.use(errorMiddleware)
 app.use(express.json())
+app.use("/uploads", express.static("db/uploads"))
 app.use(
     cors({
         credentials: true,

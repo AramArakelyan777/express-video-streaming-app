@@ -43,7 +43,7 @@ router.post("/add-a-video", upload.single("video"), (req, res) => {
     const newVideo = {
         id: uuid,
         title: req.body.title,
-        path: `/api/videos/stream/${req.file.filename}`,
+        path: `uploads/${req.file.filename}`,
         createdAt: new Date(),
     }
     VIDEOS.push(newVideo)

@@ -16,7 +16,13 @@ export function Video() {
             <h1>{video?.title}</h1>
             {video && (
                 <video width={500} height={300} controls key={video?.id}>
-                    <source src={video?.path} type="video/mp4" />
+                    <source
+                        src={`${import.meta.env.VITE_SERVER_URL.replace(
+                            "api",
+                            ""
+                        )}${video?.path}`}
+                        type="video/mp4"
+                    />
                 </video>
             )}
             <p>Created at: {video?.createdAt}</p>
