@@ -7,3 +7,11 @@ export async function getVideos() {
 export async function getAVideo(video_id) {
     return makeRequest(`/videos/${video_id}`)
 }
+
+export async function uploadVideo(formData) {
+    return makeRequest("/add-a-video", {
+        method: "POST",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+    })
+}

@@ -1,37 +1,16 @@
-function uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-        /[xy]/g,
-        function (c) {
-            var r = (Math.random() * 16) | 0,
-                v = c == "x" ? r : (r & 0x3) | 0x8
-            return v.toString(16)
-        }
-    )
+import fs from "fs"
+import path from "path"
+
+const FILE_PATH = path.resolve("db/videoData.json")
+
+export let VIDEOS = []
+
+try {
+    VIDEOS = JSON.parse(fs.readFileSync(FILE_PATH, { encoding: "utf-8" }))
+} catch (error) {
+    console.error("Error reading video data:", error)
 }
 
-export const VIDEOS = [
-    {
-        id: uuidv4(),
-        title: "Big Bunny",
-        path: "",
-        createdAt: new Date(),
-    },
-    {
-        id: uuidv4(),
-        title: "Electro",
-        path: "",
-        createdAt: new Date(),
-    },
-    {
-        id: uuidv4(),
-        title: "Rainy City",
-        path: "",
-        createdAt: new Date(),
-    },
-    {
-        id: uuidv4(),
-        title: "Sunny Sea",
-        path: "",
-        createdAt: new Date(),
-    },
-]
+export function saveVideosToFile() {
+    fs.writeFileSync(FILE_PATH, JSON.stringify(VIDEOS, null, 4))
+}
