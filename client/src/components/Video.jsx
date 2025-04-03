@@ -40,6 +40,12 @@ export function Video() {
         }
     }
 
+    const getVideoSource = (path) => {
+        return path.startsWith("http")
+            ? path
+            : `${import.meta.env.VITE_SERVER_URL.replace("api", "")}${path}`
+    }
+
     return (
         <div>
             <h1>{video?.title}</h1>
@@ -47,10 +53,7 @@ export function Video() {
                 <>
                     <video width={500} height={300} controls key={video.id}>
                         <source
-                            src={`${import.meta.env.VITE_SERVER_URL.replace(
-                                "api",
-                                ""
-                            )}${video.path}`}
+                            src={getVideoSource(video.path)}
                             type="video/mp4"
                         />
                     </video>
@@ -67,7 +70,17 @@ export function Video() {
                 <button onClick={handleUpdateTitle}>Update Title</button>
             </div>
 
-            {statusMessage && <p>{statusMessage}</p>}
+            {statusMessage && (
+                <p
+                    style={{
+                        color: statusType === "success" ? "green" : "red",
+                        fontWeight: "bold",
+                        marginTop: "10px",
+                    }}
+                >
+                    {statusMessage}
+                </p>
+            )}
 
             <button
                 onClick={() => {
