@@ -1,26 +1,25 @@
-import { getAVideo } from "../service/videoService"
-import React, { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { useLocation } from "react-router"
+import { getAVideo } from "../service/videoService"
 
 export function Video() {
-    const [videoArr, setVideo] = useState([])
+    const [video, setVideo] = useState(null)
     const { pathname } = useLocation()
-
-    const routes = pathname.split("/")
+    const videoId = pathname.split("/").pop()
 
     useEffect(() => {
-        getAVideo(routes[routes.length - 1]).then(setVideo)
-    }, [])
-
-    const video = videoArr[0]
+        getAVideo(videoId).then(setVideo)
+    }, [videoId])
 
     return (
-        <React.Fragment>
+        <div>
             <h1>{video?.title}</h1>
-            <video controls={true}>
-                <source src={video?.path} type="video/mp4" />
-            </video>
+            {video && (
+                <video width={500} height={300} controls key={video?.id}>
+                    <source src={video?.path} type="video/mp4" />
+                </video>
+            )}
             <p>Created at: {video?.createdAt}</p>
-        </React.Fragment>
+        </div>
     )
 }
