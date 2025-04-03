@@ -15,3 +15,9 @@ export async function uploadVideo(formData) {
         headers: { "Content-Type": "multipart/form-data" },
     })
 }
+
+export async function deleteVideo(video_id) {
+    return makeRequest(`/videos/${video_id}`, {
+        method: "DELETE",
+    })
+}

@@ -1,6 +1,8 @@
 import { Router } from "express"
 import multer from "multer"
 import { VIDEOS, saveVideosToFile } from "../db/videoData.js"
+import fs from "fs"
+import path from "path"
 
 const router = Router()
 
@@ -50,6 +52,24 @@ router.post("/add-a-video", upload.single("video"), (req, res) => {
     saveVideosToFile()
 
     res.status(201).json(newVideo)
+})
+
+router.delete("/videos/:video_id", (req, res) => {
+    const videoIndex = VIDEOS.findIndex((v) => v.id === req.params.video_id)
+    if (videoIndex === -1)
+        return res.status(404).json({ message: "Video not found" })
+
+    const [deletedVideo] = VIDEOS.splice(videoIndex, 1)
+    saveVideosToFile()
+
+    fs.unlink(
+        path.join("db/uploads", deletedVideo.path.split("/").pop()),
+        (err) => {
+            if (err) console.error("Error deleting file:", err)
+        }
+    )
+
+    res.status(200).json({ message: "Video deleted" })
 })
 
 export default router
