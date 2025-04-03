@@ -72,4 +72,22 @@ router.delete("/videos/:video_id", (req, res) => {
     res.status(200).json({ message: "Video deleted" })
 })
 
+router.put("/videos/:video_id", (req, res) => {
+    const { title } = req.body
+    const video = VIDEOS.find((v) => v.id === req.params.video_id)
+
+    if (!video) {
+        return res.status(404).json({ message: "Video not found" })
+    }
+
+    if (!title) {
+        return res.status(400).json({ message: "No title provided" })
+    }
+
+    video.title = title
+    saveVideosToFile()
+
+    res.status(200).json({ message: "Video updated successfully", video })
+})
+
 export default router

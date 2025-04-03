@@ -21,3 +21,11 @@ export async function deleteVideo(video_id) {
         method: "DELETE",
     })
 }
+
+export async function updateVideoTitle(video_id, newTitle) {
+    return makeRequest(`/videos/${video_id}`, {
+        method: "PUT",
+        data: { title: newTitle },
+        headers: { "Content-Type": "application/json" },
+    })
+}

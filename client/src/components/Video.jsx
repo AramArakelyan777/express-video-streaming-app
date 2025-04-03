@@ -1,22 +1,50 @@
 import React, { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router"
-import { getAVideo, deleteVideo } from "../service/videoService"
+import {
+    getAVideo,
+    deleteVideo,
+    updateVideoTitle,
+} from "../service/videoService"
 
 export function Video() {
     const [video, setVideo] = useState(null)
+    const [newTitle, setNewTitle] = useState("")
+    const [statusMessage, setStatusMessage] = useState("")
+    const [statusType, setStatusType] = useState("")
     const { pathname } = useLocation()
     const videoId = pathname.split("/").pop()
     const navigate = useNavigate()
 
     useEffect(() => {
-        getAVideo(videoId).then(setVideo)
+        getAVideo(videoId).then((data) => {
+            setVideo(data)
+            setNewTitle(data.title)
+        })
     }, [videoId])
+
+    const handleUpdateTitle = async () => {
+        if (!newTitle.trim()) {
+            setStatusMessage("Title cannot be empty!")
+            setStatusType("error")
+            return
+        }
+
+        try {
+            await updateVideoTitle(videoId, newTitle)
+            setVideo((prev) => ({ ...prev, title: newTitle }))
+            setStatusMessage("Title updated successfully!")
+            setStatusType("success")
+        } catch (error) {
+            setStatusMessage("Failed to update title: " + error)
+            setStatusType("error")
+        }
+    }
 
     return (
         <div>
             <h1>{video?.title}</h1>
             {video && (
-                <React.Fragment>
+                <>
                     <video width={500} height={300} controls key={video.id}>
                         <source
                             src={`${import.meta.env.VITE_SERVER_URL.replace(
@@ -26,11 +54,23 @@ export function Video() {
                             type="video/mp4"
                         />
                     </video>
-                </React.Fragment>
+                </>
             )}
             <p>Created at: {video?.createdAt}</p>
+
+            <div>
+                <input
+                    type="text"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                />
+                <button onClick={handleUpdateTitle}>Update Title</button>
+            </div>
+
+            {statusMessage && <p>{statusMessage}</p>}
+
             <button
-                onClick={() => {    
+                onClick={() => {
                     deleteVideo(video?.id)
                     navigate("/videos")
                 }}
